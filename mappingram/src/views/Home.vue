@@ -1,15 +1,16 @@
 <template>
-  <hello-world />
+    <div class="Home">
+    </div>
 </template>
 
 <script>
-import HelloWorld from "../components/HelloWorld";
+import PostDialog from "../components/PostDialog.vue"
 
 export default {
   name: "Home",
 
   components: {
-    HelloWorld,
+    PostDialog
   },
 };
 </script>
