@@ -9,7 +9,7 @@
         <v-flex xs12>
             <v-flex xs10 sm6 md4 class="select">
           <v-text-field
-            label="maill adress/user ID"
+            label="maill adress"
             outlined
           ></v-text-field>
             </v-flex>
@@ -22,13 +22,20 @@
           ></v-text-field>
             </v-flex>
         </v-flex>
-
+        <v-flex xs12>
+            <v-flex xs10 sm6 md4 class="select">
+          <v-text-field
+            label="user ID"
+            outlined
+          ></v-text-field>
+            </v-flex>
+        </v-flex>
         <v-flex xs12>
             <div class="text-center">
           <v-btn @click="login"
           class = "ma-3"
           
-          >login</v-btn>
+          >アカウント作成</v-btn>
             </div>
         </v-flex>
 
@@ -39,10 +46,10 @@
 
 <script>
     export default{
-        name: "login",
+        name: "newaccount",
     methods: {
         login: function() {
-            this.$router.push('/welcome');
+            this.$router.push('');
         }
     }
     }
