@@ -11,10 +11,16 @@
       </v-col>
 
       <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">Welcome to Vuetify</h1>
+        <h1 class="display-2 font-weight-bold mb-3">kuni sota</h1>
+        <br />
+
+        <v-alert  dense  type="success">kuni sota卍</v-alert>
+
+
 
         <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
+          For help and collaboration 
+          <br />with other Vuetify developers,
           <br />please join our online
           <a href="https://community.vuetifyjs.com" target="_blank"
             >Discord Community</a
