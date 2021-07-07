@@ -5,6 +5,7 @@ import welcome from "../views/welcome.vue";
 import login from "../views/login.vue";
 import newaccount from "../views/newaccount.vue";
 import zikken1 from "../views/zikken1.vue";
+import buttontest from "../views/Buttontest.vue";
 
 
 Vue.use(VueRouter);
@@ -43,6 +44,11 @@ const routes = [
     path: "/zikken1",
     name: "zikken1",
     component: zikken1,
+  },
+  {
+    path: "/buttontest",
+    name: "buttontest",
+    component: buttontest
   },
 ];
 
