@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import welcome from "../views/welcome.vue";
 import login from "../views/login.vue";
 import newaccount from "../views/newaccount.vue";
+import zikken1 from "../views/zikken1.vue";
 
 
 Vue.use(VueRouter);
@@ -37,6 +38,11 @@ const routes = [
     path: "/newaccount",
     name: "newaccount",
     component: newaccount,
+  },
+  {
+    path: "/zikken1",
+    name: "zikken1",
+    component: zikken1,
   },
 ];
 
