@@ -6,13 +6,13 @@ import login from "../views/login.vue";
 import newaccount from "../views/newaccount.vue";
 import zikken1 from "../views/zikken1.vue";
 import buttontest from "../views/Buttontest.vue";
-
+import firebase from 'firebase';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
+    path: "/home",
     name: "Home",
     component: Home,
   },
@@ -26,7 +26,7 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
-    path: "/welcome",
+    path: "/",
     name: "welcome",
     component: welcome,
   },
@@ -56,6 +56,21 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeResolve((to, from , next) => {
+  if(to.path == '/' || to.path == 'newaccount' || to.path == 'login') { 
+    next();
+  }
+  else {
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+        next();
+      }
+      else {
+        next({path: '/'});
+      }})
+  }
 });
 
 export default router;

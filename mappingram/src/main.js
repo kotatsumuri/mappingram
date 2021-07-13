@@ -7,6 +7,20 @@ import firebase from "firebase";
 
 Vue.config.productionTip = false;
 
+var firebaseConfig = {
+  apiKey: "AIzaSyBAikhxYv09lHJXAAX-8vdt70ggW3RW7ko",
+  authDomain: "mappingram.firebaseapp.com",
+  databaseURL: "https://mappingram-default-rtdb.firebaseio.com",
+  projectId: "mappingram",
+  storageBucket: "mappingram.appspot.com",
+  messagingSenderId: "687949004394",
+  appId: "1:687949004394:web:196f4485320a7824429413",
+  measurementId: "G-KPX3VV8CYK"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
 new Vue({
   router,
   store,
