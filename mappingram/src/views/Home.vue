@@ -73,18 +73,23 @@
       </v-list>
     </v-navigation-drawer>
   </v-card>
+      <post-dialog>
+      </post-dialog>
+      <post-view-dialog>
+      </post-view-dialog>
       </v-container>
     </div>
 </template>
 
 <script>
 import PostDialog from "../components/PostDialog.vue"
-
+import PostViewDialog from "../components/PostViewDialog.vue"
 export default {
   name: "Home",
 
   components: {
-    PostDialog
+    PostDialog,
+    PostViewDialog
   },
 
   data () {
