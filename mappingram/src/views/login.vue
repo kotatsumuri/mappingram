@@ -51,7 +51,7 @@
                 this.$refs.form.validate();
                 let _this = this;
                 if(this.valid) {
-                    var ret = firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
+                    firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
                         result => {
                             result;
 

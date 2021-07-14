@@ -95,16 +95,8 @@ export default {
   data () {
     return {
       drawer: true,    
-    mini: true,
+     mini: true,
     }
   },
-
-  data: () => ({
-    admins: [
-    ['Management', 'mdi-account-multiple-outline'],
-    ['Settings', 'mdi-cog-outline'],
-    ],
-  }),
-
 };
 </script>

@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import firebase from "firebase";
+import * as VueGoogleMaps from 'vue2-google-maps';
 
 Vue.config.productionTip = false;
 
@@ -20,6 +21,14 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyCa7OSJXJBHDE1KmlTIhJAOOJV5maIlfic",
+    libraries: 'places',
+    region: 'JP'
+  },
+  autobindAllEvents: false
+});
 
 new Vue({
   router,

@@ -50,7 +50,7 @@ const router = new VueRouter({
 });
 
 router.beforeResolve((to, from , next) => {
-  if(to.path == '/' || to.path == 'newaccount' || to.path == 'login') { 
+  if(to.path == '/' || to.path == '/newaccount' || to.path == '/login') { 
     next();
   }
   else {

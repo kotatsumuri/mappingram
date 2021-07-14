@@ -17,7 +17,29 @@
                 </v-card-text>
                 <v-card-text>
                     場所を選択
-                    <!--<div id="map"></div>-->
+                    <div>
+                        <GmapMap
+                         :center="center"
+                         :zoom="7"
+                         :options="{
+                             zoomControl: false,
+                             mapTypeControl: false,
+                             scaleControl: false,
+                             streetViewControl: false,
+                             rotateControl: false,
+                             fullscreenControl: false,
+                             disableDefaultUi: false
+                         }"
+                         @rightclick="place($event)"
+                         map-type-id="terrain"
+                         style="height:300px"
+                        >
+                            <GmapMarker
+                             :position="pos"
+                             :draggable="true"
+                            />
+                        </GmapMap>
+                    </div>
                 </v-card-text>
                 <v-card-text>
                     コメントを追加
@@ -40,10 +62,6 @@
 
 <script>
 import firebase from "firebase";
-//let GoogleMapsLoader = require("google-maps");
-
-//GoogleMapsLoader.KEY = "AIzaSyCa7OSJXJBHDE1KmlTIhJAOOJV5maIlfic";
-//GoogleMapsLoader.LANGUAGE = "ja";
 
 export default {
     name: "PostDialog",
@@ -52,11 +70,12 @@ export default {
             showDialog:false,
             comment:null,
             file:null,
-            //map: null
+            center:{lat:35.68562,lng:139.75127},
+            pos: null
         }
     },
     mounted: function() {
-        //GoogleMapsLoader.load(this.loadMap);
+        
     },
     methods: {
         send: function() {
@@ -79,6 +98,7 @@ export default {
             const uploadTask = firebase.storage().ref().child(`${bucket}${str_date}`).put(file);
             uploadTask.on('state_changed',
                 (snapshot) => {
+                    snapshot;
                     console.log('success!');
                 },
                 (error) => {
@@ -136,14 +156,12 @@ export default {
  
             return format_str;
         },
-        /*
-        loadMap: function(google) {
-            this.map = new google.maps.Map(document.getElementById("map"), {
-                center: {lat: 34.722677, lng: 135.492364},
-                zoom: 8,
-                gestureHandling: "greedy"
-            }) ;
-        }*/
+
+        place(event){
+            if (event) {
+                this.pos ={lat:event.latLng.lat(), lng:event.latLng.lng()};
+            }
+        },
  
     }
 }

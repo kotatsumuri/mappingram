@@ -55,7 +55,7 @@ export default {
 		userNameRules: [
 			v => !!v || "",
 			v => /^\w{0,12}$/.test(v) || '英数字、_(アンダーバー)、12文字以下で入力してください',
-			v => this.userNameisOK || 'すでに使われています'
+			v => this.userNameisOK(v) || 'すでに使われています'
 		],
 		e:null,
   	}
@@ -73,10 +73,10 @@ export default {
   },
 
   computed: {
-	  userNameisOK: function() {
+	  userNameisOK: function(str) {
 		  if(this.$store.getters.userNames == null)
 		  	return true;
-		  return !Object.keys(this.$store.getters.userNames).includes(this.userName);
+		  return !Object.keys(this.$store.getters.userNames).includes(str);
 	  },
   },
 
