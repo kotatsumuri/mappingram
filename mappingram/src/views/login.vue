@@ -54,6 +54,7 @@
                     var ret = firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
                         result => {
                             result;
+
                             try {
                                 firebase.database().ref('users/' + firebase.auth().currentUser.uid +'/').on('value', snapshot => {
                                     this.$store.commit('setUserInfo', snapshot.val());

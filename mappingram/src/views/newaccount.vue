@@ -100,9 +100,10 @@ export default {
 						userinfo["follwerNum"] = 0;
 						userinfo["likeNum"] = 0;
 						userinfo["postNum"] = 0;
+						userinfo["uid"] = firebase.auth().currentUser.uid;
 						firebase.database().ref('users/' + firebase.auth().currentUser.uid).update(userinfo);
 						firebase.database().ref('users/' + firebase.auth().currentUser.uid).on('value', snapshot => {
-							this.$store.commit('setUserInfo', snapshot.val());
+							this.$store.commit('setUserInfo', snapshot.val(),firebase.auth().currentUser.uid);
 						});
 						this.$router.push('/home');
                     }
