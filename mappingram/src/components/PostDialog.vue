@@ -12,13 +12,23 @@
                 </v-card-title>
                 <v-card-text>
                     写真を追加
-                    <v-file-input v-model = "file" accept="image/*">
+                    <v-file-input v-model = "file" accept="image/*" >
                     </v-file-input>
                 </v-card-text>
                 <v-card-text>
+                    <v-text-field
+                        hide-details
+                        prepend-icon="mdi-magnify"
+                        signal-line
+                        @click:prepend="search"
+                        @keydown.enter="search"
+                        v-model="address"
+                    >
+                    </v-text-field> 
                     場所を選択
                     <div>
                         <GmapMap
+                         ref="mapRef"
                          :center="center"
                          :zoom="7"
                          :options="{
@@ -30,13 +40,12 @@
                              fullscreenControl: false,
                              disableDefaultUi: false
                          }"
-                         @rightclick="place($event)"
                          map-type-id="terrain"
                          style="height:300px"
+                         @center_changed = "change_center"
                         >
                             <GmapMarker
                              :position="pos"
-                             :draggable="true"
                             />
                         </GmapMap>
                     </div>
@@ -62,6 +71,7 @@
 
 <script>
 import firebase from "firebase";
+import {gmapApi} from 'vue2-google-maps';
 
 export default {
     name: "PostDialog",
@@ -71,11 +81,26 @@ export default {
             comment:null,
             file:null,
             center:{lat:35.68562,lng:139.75127},
-            pos: null
+            pos: null,
+            image_image: null,
+            image_size: {},
+            image_type: '',
+            image_src: null,
+            image_image_scaled:null,
+            size: null,
+            address: null
         }
     },
     mounted: function() {
-        
+        this.pos = this.center;
+    },
+    computed: {
+        google: gmapApi
+    },
+    watch: {
+        file: function() {
+            this.image_open_file();
+        }
     },
     methods: {
         send: function() {
@@ -84,7 +109,7 @@ export default {
                 return;
             }
 
-            this.attachImage(this.file, "post/"+this.$store.getters.user["uid"]+"/");
+            this.attachImage(this.file, "post/"+this.$store.getters.user["uid"]+"/main/");
         },
         attachImage: function(inputFile, bucket) {
             const file = inputFile;
@@ -113,9 +138,9 @@ export default {
                         commitdata["date"] = str_date;
                         commitdata["url"] = downloadURL;
                         commitdata["authorComment"] = _this.comment;
-                        commitdata["lat"] = 81.0101001;
-                        commitdata["lng"] = 135.11111111;
-                        firebase.database().ref("post/"+_this.$store.getters.user["uid"]+str_date).update(commitdata);
+                        commitdata["lat"] = _this.pos.lat();
+                        commitdata["lng"] = _this.pos.lng();
+                        
                         let list = [];
                         if(_this.$store.getters.user["postNum"] == 0) {
                             list = [_this.$store.getters.user["uid"]+str_date];
@@ -126,6 +151,9 @@ export default {
                         }
                         firebase.database().ref("users/"+_this.$store.getters.user["uid"]+"/postList").set(list);
                         firebase.database().ref("users/"+_this.$store.getters.user["uid"]+"/postNum").set(_this.$store.getters.user["postNum"] + 1);
+                        _this.showDialog = false;
+                        _this.image_save(str_date, commitdata);
+                        alert("投稿が完了しました");
                    }) 
                 }
             )
@@ -156,13 +184,94 @@ export default {
  
             return format_str;
         },
-
-        place(event){
-            if (event) {
-                this.pos ={lat:event.latLng.lat(), lng:event.latLng.lng()};
+        image_open_file: function() {
+            var reader = new FileReader();
+            var that = this;
+            reader.onload = () => {
+                that.image_type = that.file.type;
+                that.image_src = reader.result;
+                that.image_image = new Image();
+                that.image_image.onload = () => {
+                    that.image_size = {width : that.image_image.width, height: that.image_image.height};
+                    that.image_scale_change();
+                };
+                that.image_image.src = that.image_src;
             }
+            reader.readAsDataURL(this.file);
         },
- 
+        image_scale_change: function() {
+            var image = this.image_image;
+            var size, sx, sy, sw, sh, dx, dy, dw, dh;
+            size = (image.width < image.height) ? image.width : image.height;
+            var x = Math.floor((image.width - size) / 2);
+            var y = Math.floor((image.height - size) / 2);
+            sx = x;
+            sy = y;
+            sw = sh = size;
+            dx = dy = 0;
+            dw = dh = size;
+
+            var canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            var context = canvas.getContext('2d');
+            context.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+            this.image_image_scaled = canvas;
+            this.size = size;
+        },
+        image_save: async function(str_date, commitdata) {
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+            canvas.width = 50;
+            canvas.height = 50;
+            context.drawImage(this.image_image_scaled, 0, 0, this.size, this.size, 0, 0, canvas.width, canvas.height);
+
+            let that = this;
+            canvas.toBlob(function(blob){
+                var img = new Image();
+                img.src = blob;
+                const uploadTask = firebase.storage().ref().child("post/"+that.$store.getters.user["uid"]+"/sub/" + str_date).put(blob);
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        snapshot;
+                        console.log('success!');
+                    },
+                    (error) => {
+                        console.log('error', error);
+                    },
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL){
+                            commitdata["sub_url"] = downloadURL;
+                            firebase.database().ref("post/"+that.$store.getters.user["uid"]+str_date).update(commitdata);
+                        })
+                    }
+                )
+            });
+            
+
+        },
+        change_center: function() {
+            var that = this;
+            this.$refs.mapRef.$mapPromise.then((map) => {
+                that.pos = map.getCenter();
+            })
+        },
+        search: function() {
+            let that = this;
+            let geocoder = new this.google.maps.Geocoder();
+            if(this.address == null)
+                return;
+            geocoder.geocode({
+                'address': that.address
+            }, (results, status) => {
+                if(status === that.google.maps.GeocoderStatus.OK) {
+                    that.$refs.mapRef.$mapPromise.then((map) => {
+                        let latlng = new that.google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+                        map.panTo(latlng);
+                    })
+                }
+            });
+        }
     }
 }
 </script>

@@ -12,7 +12,7 @@
         <v-btn 
         class = "ma-3"
         @click="login"
-        >login</v-btn>
+        >ログイン</v-btn>
         <v-btn 
         class = "ma-3"
         @click="newaccount"

@@ -11,9 +11,9 @@
 		
         <v-flex xs10 sm6 md4 class="select">
 			<v-form ref="form" v-model="valid" lazy-validation>
-        		<v-text-field v-model="email" :rules="emailRules" label="mail adress" outlined required></v-text-field>
-        		<v-text-field v-model="password" :rules="passwordRules" @click:append = "showPassword = !showPassword" :type = "showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" label="your password" outlined required></v-text-field>
-        		<v-text-field v-model="userName" :rules="userNameRules" label="user ID" outlined required></v-text-field>
+        		<v-text-field v-model="email" :rules="emailRules" label="メールアドレス" outlined required></v-text-field>
+        		<v-text-field v-model="password" :rules="passwordRules" @click:append = "showPassword = !showPassword" :type = "showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" label="パスワード" outlined required></v-text-field>
+        		<v-text-field v-model="userName" :rules="userNameRules" label="ユーザーID" outlined required></v-text-field>
 				<div class="text-center">
           			<v-btn :disabled="!valid" @click="signin" class="ma-3">アカウント作成</v-btn>
         		</div>
@@ -73,11 +73,7 @@ export default {
   },
 
   computed: {
-	  userNameisOK: function(str) {
-		  if(this.$store.getters.userNames == null)
-		  	return true;
-		  return !Object.keys(this.$store.getters.userNames).includes(str);
-	  },
+	  
   },
 
   methods: {
@@ -88,7 +84,6 @@ export default {
 			  var ret = firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
                 result => {
                     result;
-                    //this.$store.commit('setUserInfo', firebase.auth().currentUser, _this.userName);
                     try {
 						let updates = {};
 						updates[_this.userName] = firebase.auth().currentUser.uid;
@@ -105,6 +100,9 @@ export default {
 						firebase.database().ref('users/' + firebase.auth().currentUser.uid).on('value', snapshot => {
 							this.$store.commit('setUserInfo', snapshot.val(),firebase.auth().currentUser.uid);
 						});
+						firebase.database().ref('post/').on('value', snapshot => {
+                            this.$store.commit('setPost', snapshot.val());
+                        });
 						this.$router.push('/home');
                     }
                     catch(e) {
@@ -115,7 +113,12 @@ export default {
             )
 			_this.e = ret;
 		  }
-	  }
+	  },
+	  userNameisOK: function(str) {
+		  if(this.$store.getters.userNames == null)
+		  	return true;
+		  return !Object.keys(this.$store.getters.userNames).includes(str);
+	  },
   },
 };
 </script>

@@ -9,10 +9,10 @@
             <v-flex xs12>
                 <v-flex xs10 sm6 md4 class="select">
                     <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-text-field v-model="email" :rules="emailRules" label="mail adress" outlined required></v-text-field>
-        		        <v-text-field v-model="password" :rules="passwordRules" @click:append = "showPassword = !showPassword" :type = "showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" label="your password" outlined required></v-text-field>
+                        <v-text-field v-model="email" :rules="emailRules" label="メールアドレス" outlined required></v-text-field>
+        		        <v-text-field v-model="password" :rules="passwordRules" @click:append = "showPassword = !showPassword" :type = "showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" label="パスワード" outlined required></v-text-field>
                         <div class="text-center">
-                            <v-btn @:disabled="!valid" @click="login" class="ma-3">login</v-btn>
+                            <v-btn @:disabled="!valid" @click="login" class="ma-3">ログイン</v-btn>
                         </div>
                     </v-form>
                 </v-flex>
@@ -58,6 +58,12 @@
                             try {
                                 firebase.database().ref('users/' + firebase.auth().currentUser.uid +'/').on('value', snapshot => {
                                     this.$store.commit('setUserInfo', snapshot.val());
+                                });
+                                firebase.database().ref('userNames/').on('value', snapshot => {
+                                    this.$store.commit('setUserNames', snapshot.val());
+                                });
+                                firebase.database().ref('post/').on('value', snapshot => {
+                                    this.$store.commit('setPost', snapshot.val());
                                 });
                                 this.$router.push('/home');
                             }

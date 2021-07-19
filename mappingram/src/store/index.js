@@ -1,12 +1,15 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
+
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     userNames: {},
-    user: {}
+    user: {},
+    post:{}
   },
 
   mutations: {
@@ -15,7 +18,15 @@ export default new Vuex.Store({
     },
     setUserInfo: function(state, _user) {
       state.user = _user;
-		}
+		},
+    setPost: function(state, value) {
+      state.post = value;
+    },
+    logout: function(state) {
+      state.userNames = {};
+      state.user = {};
+      state.post = {};
+    }
   },
   actions: {},
   getters: {
@@ -24,6 +35,16 @@ export default new Vuex.Store({
     },
     user: function(state) {
       return state.user;
-    }
+    },
+    post: function(state) {
+      if(state.post == null)
+        return {};
+      return state.post;
+    },
+    
   },
+  plugins: [createPersistedState({
+    storage: window.sessionStorage,
+    key: 'mappingram'
+  })]
 });
